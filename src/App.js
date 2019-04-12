@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import http from "./services/httpService";
-import config from "./config.json";
-import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
+import config from "./config.json";
 
 class App extends Component {
   state = {
@@ -11,21 +11,21 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const { data: posts } = await http.get("s" + config.apiEndpoint);
+    const { data: posts } = await http.get(config.apiEndopoint);
     this.setState({ posts });
   }
 
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await http.post(config.apiEndpoint, obj);
+    const { data: post } = await http.post(config.apiEndopoint, obj);
 
     const posts = [post, ...this.state.posts];
     this.setState({ posts });
   };
 
   handleUpdate = async post => {
-    post.title = "UPDATED";
-    const { data } = await http.put(config.apiEndpoint + "/" + post.id, post);
+    post.title = "UPDATE";
+    await http.put(config.apiEndopoint + "/" + post.id, post);
 
     const posts = [...this.state.posts];
     const index = posts.indexOf(post);
@@ -40,11 +40,10 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await http.delete("s" + config.apiEndpoint + "/" + post.id);
-      throw new Error("");
+      await http.delete("s" + config.apiEndopoint + "/" + post.id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
-        alert("This post has already been deleted");
+        alert("This post has already been deleted.");
 
       this.setState({ posts: originalPosts });
     }
